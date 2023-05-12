@@ -1,17 +1,17 @@
-﻿<?php
-	include '../classes/category.php';
-	$category = new Category();
+<?php
+	include '../classes/brand.php';
+	$brand = new Brand();
 	if(isset($_GET["delId"]) && $_GET["delId"]!=NULL){
-		$catId= $_GET["delId"];
-		$delResult = $category->delete($catId);
+		$brandId= $_GET["delId"];
+		$delResult = $brand->delete($brandId);
 	}
-	$cats = $category->getAll();
+	$brands = $brand->getAll();
 ?>
 <?php include 'inc/header.php';?>
 <?php include 'inc/sidebar.php';?>
         <div class="grid_10">
             <div class="box round first grid">
-                <h2>Category List</h2>
+                <h2>brand List</h2>
                 <div class="block">
 					<?php if(isset($delResult)){
 						echo $delResult;
@@ -20,21 +20,21 @@
 					<thead>
 						<tr>
 							<th>Serial No.</th>
-							<th>Category Name</th>
+							<th>brand Name</th>
 							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php 
 						$i = 0;
-						if($cats != false){
-						foreach($cats as $cat){ 
+						if($brands!=false){
+						foreach($brands as $brand){ 
 							$i++;
 						?>
 							<tr class="odd gradeX">
 								<td><?php echo $i ?></td>
-								<td><?php echo $cat[1] ?></td>
-								<td><a href="catEdit.php?catId=<?php echo $cat[0] ?>">Edit</a> || <a onclick="return confirm('are you sure')" href="?delId=<?php echo $cat[0] ?>">Delete</a></td>
+								<td><?php echo $brand[1] ?></td>
+								<td><a href="brandEdit.php?brandId=<?php echo $brand[0] ?>">Edit</a> || <a onclick="return confirm('are you sure')" href="?delId=<?php echo $brand[0] ?>">Delete</a></td>
 							</tr>
 						<?php }}; ?>
 					</tbody>

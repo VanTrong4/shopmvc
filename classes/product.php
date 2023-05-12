@@ -3,7 +3,7 @@ include_once '../lib/database.php';
 include_once '../helpers/format.php';
 
 
-class Category
+class Product
 {
     private $db;
     private $fm;
@@ -12,41 +12,42 @@ class Category
         $this->db = new Database();
         $this->fm = new Format();
     }
-    public function insert($catName){
-        $catName = $this->fm->validation($catName);
+    public function insert($data,$files){
+        $productName = mysqli_real_escape_string($this->db->link, $data['productName']);
+        $productCat = mysqli_real_escape_string($this->db->link, $data['productCat']);
+        $productBrand = mysqli_real_escape_string($this->db->link, $data['productBrand']);
+        $productDescription = mysqli_real_escape_string($this->db->link, $data['productDescription']);
+        $productPrice = mysqli_real_escape_string($this->db->link, $data['productPrice']);
+        $productType = mysqli_real_escape_string($this->db->link, $data['productType']);
 
-        $catName = mysqli_real_escape_string($this->db->link, $catName);
+        $permited = array('jpg', 'png', 'jpeg', 'gif');
+        $fileName = $_FILES['productImage']['name'];
+        $fileSize = $_FILES['productImage']['size'];
+        $fileTemp = $_FILES['productImage']['tmp_name'];
 
-        if(empty($catName)){
-            $err = "Category must be not empty";
+        $div = explode('.', $fileName);
+        $file_ext = strtolower(end($div));
+        $uniqueImage = substr(md5(time()),0,10).'.'.$file_ext;
+        $uploaded_image = 'uploads/'.$uniqueImage;
+        if($productName == '' || $productBrand == '' || $productDescription == '' || $productPrice == '' || $productType == '' || $fileName ==''){
+            $err = "Fields must be not empty";
             return $err;
         }else{
-            $getCats = "SELECT * FROM tbl_category";
-            $resultCats = $this->db->select($getCats);
-            if($resultCats!=false){
-                $resultCatsNew = $resultCats->fetch_all();
-                foreach($resultCatsNew as $cats){
-                    foreach($cats as $cat){
-                        if($cat===$catName){
-                            return "Add error because category already exists";
-                        }
-                    }
-                }
-            }
-            $query = "INSERT INTO tbl_category (catName) SELECT '$catName' WHERE NOT EXISTS (SELECT * FROM tbl_category WHERE catName = '$catName')";
+            move_uploaded_file($fileTemp, $uploaded_image);
+            $query = "INSERT INTO tbl_product(productName,productCat,productBrand,descrip,price,productType,productImage) VALUES ('$productName', '$productBrand', '$productCat', '$productDescription', '$productPrice', '$productType', '$uniqueImage')";
             $result = $this->db->insert($query);
             if($result){
-                return 'category had been inserted';
+                return 'Product had been inserted';
             }else{
-                return 'category was not inserted';
+                return 'Product was not inserted';
             }
         }
     }
     public function getAll(){
-        $getCats = "SELECT * FROM tbl_category";
-        $resultCats = $this->db->select($getCats);
-        if($resultCats!=false){
-            return $resultCats->fetch_all();
+        $getProduct = "SELECT * FROM tbl_product";
+        $resultProduct = $this->db->select($getProduct);
+        if($resultProduct!=false){
+            return $resultProduct->fetch_all();
         }else{
             return false;
         }

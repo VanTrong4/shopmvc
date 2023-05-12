@@ -1,18 +1,35 @@
-﻿<?php include 'inc/header.php';?>
-<?php include 'inc/sidebar.php';?>
+﻿<?php 
+include 'inc/header.php';
+include 'inc/sidebar.php';
+include '../classes/brand.php';
+include '../classes/category.php';
+include '../classes/product.php';
+?>
+<?php 
+$product = new Product();
+
+if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])){
+	$insertProduct = $product->insert($_POST,$_FILES);
+}
+
+?>
 <div class="grid_10">
     <div class="box round first grid">
         <h2>Add New Product</h2>
         <div class="block">               
-         <form action="" method="post" enctype="multipart/form-data">
+         <form action="productadd.php" method="post" enctype="multipart/form-data">
+            <span>
+                <?php if(isset($insertProduct)){
+                    echo $insertProduct;
+                } ?>
+            </span>
             <table class="form">
-               
                 <tr>
                     <td>
                         <label>Name</label>
                     </td>
                     <td>
-                        <input type="text" placeholder="Enter Product Name..." class="medium" />
+                        <input name="productName" type="text" placeholder="Enter Product Name..." class="medium" />
                     </td>
                 </tr>
 				<tr>
@@ -20,11 +37,16 @@
                         <label>Category</label>
                     </td>
                     <td>
-                        <select id="select" name="select">
-                            <option>Select Category</option>
-                            <option value="1">Category One</option>
-                            <option value="2">Category Two</option>
-                            <option value="3">Category Three</option>
+                        <select id="select" name="productCat">
+                            <option disabled selected>Select Category</option>
+                            <?php 
+                            $category = new Category();
+                            $cats = $category->getAll();
+                            if($cats != false){
+                                foreach($cats as $cat){
+                            ?>
+                            <option value="<?php echo $cat[0] ?>"><?php echo $cat[1] ?></option>
+                            <?php }};?>
                         </select>
                     </td>
                 </tr>
@@ -33,11 +55,16 @@
                         <label>Brand</label>
                     </td>
                     <td>
-                        <select id="select" name="select">
-                            <option>Select Brand</option>
-                            <option value="1">Brand One</option>
-                            <option value="2">Brand Two</option>
-                            <option value="3">Brand Three</option>
+                        <select id="select" name="productBrand">
+                            <option disabled selected>Select Brand</option>
+                            <?php 
+                            $bran = new Brand();
+                            $brands = $bran->getAll();
+                            if($brands != false){
+                                foreach($brands as $brand){
+                            ?>
+                            <option value="<?php echo $brand[0] ?>"><?php echo $brand[1] ?></option>
+                            <?php }};?>
                         </select>
                     </td>
                 </tr>
@@ -47,7 +74,7 @@
                         <label>Description</label>
                     </td>
                     <td>
-                        <textarea class="tinymce"></textarea>
+                        <textarea name="productDescription" class="tinymce"></textarea>
                     </td>
                 </tr>
 				<tr>
@@ -55,7 +82,7 @@
                         <label>Price</label>
                     </td>
                     <td>
-                        <input type="text" placeholder="Enter Price..." class="medium" />
+                        <input name="productPrice" type="text" placeholder="Enter Price..." class="medium" />
                     </td>
                 </tr>
             
@@ -64,7 +91,7 @@
                         <label>Upload Image</label>
                     </td>
                     <td>
-                        <input type="file" />
+                        <input name="productImage" type="file" />
                     </td>
                 </tr>
 				
@@ -73,10 +100,10 @@
                         <label>Product Type</label>
                     </td>
                     <td>
-                        <select id="select" name="select">
+                        <select id="select" name="productType">
                             <option>Select Type</option>
-                            <option value="1">Featured</option>
-                            <option value="2">Non-Featured</option>
+                            <option value="0">Featured</option>
+                            <option value="1">Non-Featured</option>
                         </select>
                     </td>
                 </tr>
