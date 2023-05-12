@@ -31,7 +31,7 @@
                 </li>
                 <li><a class="menuitem">Product Option</a>
                     <ul class="submenu">
-                        <li><a href="addproduct.php">Add Product</a> </li>
+                        <li><a href="productadd.php">Add Product</a> </li>
                         <li><a href="productlist.php">Product List</a> </li>
                     </ul>
                 </li>
